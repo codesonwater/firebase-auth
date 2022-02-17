@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import Button from 'react-bootstrap/Button';
 import { app } from "../ConnectAuth";
 
 export default function Login( {setUser, user}){
@@ -12,8 +13,10 @@ export default function Login( {setUser, user}){
 
     useEffect(() => {
         const localUser =localStorage.getItem('displayName')
+        const avatar =localStorage.getItem('avatar')
+
         console.log('localUser from LS', localUser)
-        if(localUser) setUser(localUser)
+        if(localUser) setUser({...user, displayName: localUser, photo: avatar})
     }, [])
 
     const handleFormSubmit = (event) =>{
@@ -31,6 +34,7 @@ export default function Login( {setUser, user}){
             setUser(result.user)
 
             localStorage.setItem('displayName', result.user.displayName)
+            localStorage.setItem('avatar', result.user.photoURL)
 
             console.log('this is my result', result.user.displayName)
             navigate('/')
@@ -56,11 +60,8 @@ export default function Login( {setUser, user}){
 
             <input type ="submit" value ="Login" />
         </form>
-        <button 
-        onClick={ handleGoogleLogin }
-        style={{
-            backgroundColor: 'black', 
-            color: 'white'}}>Sign in with Google</button>
+        <Button onClick={ handleGoogleLogin }>Sign in with Google</Button>
+
 
         <p>Not a user? <Link to="/signup">Sign Up</Link></p>
     </>
